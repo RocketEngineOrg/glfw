@@ -874,6 +874,12 @@ extern "C" {
  *  [window attribute](@ref GLFW_VISIBLE_attrib).
  */
 #define GLFW_VISIBLE                0x00020004
+/*! @brief Window default titlebar window hint and attribute - library modification
+ *
+ *  Window default titlebar [window hint](@ref GLFW_TITLEBAR_hint) and
+ *  [window attribute](@ref GLFW_TITLEBAR_hint).
+ */
+#define GLFW_TITLEBAR        0x00020040
 /*! @brief Window decoration window hint and attribute
  *
  *  Window decoration [window hint](@ref GLFW_DECORATED_hint) and
@@ -1639,6 +1645,26 @@ typedef void (* GLFWwindowposfun)(GLFWwindow* window, int xpos, int ypos);
  */
 typedef void (* GLFWwindowsizefun)(GLFWwindow* window, int width, int height);
 
+/*! @brief The function pointer type for window titlebar hittest callbacks - library modification.
+ *
+ *  This is the function pointer type for window titelebar hittest callbacks.
+ *  A window titlebar hittest callback function has the following signature:
+ *  @code
+ *  void callback_name(GLFWwindow* window, int xpos, int ypos, int* hit)
+ *  @endcode
+ *
+ *  @param[in] window The window that was moved.
+ *  @param[in] xpos The x-coordinate of mouse, in screen coordinates.
+ *  @param[in] ypos The y-coordinate of mouse, in screen coordinates.
+ *  @param[out] hit 'true' or '1' if mouse hovering titlebar.
+ *
+ *  @sa @ref window_pos
+ *  @sa @ref glfwSetTitlebarHitTestCallback
+ *
+ *  @ingroup window
+ */
+typedef void (* GLFWtitlebarhittestfun)(GLFWwindow* window, int xpos, int ypos, int* hit);
+
 /*! @brief The function pointer type for window close callbacks.
  *
  *  This is the function pointer type for window close callbacks.  A window
@@ -2014,6 +2040,26 @@ typedef void (* GLFWmonitorfun)(GLFWmonitor* monitor, int event);
  *  @ingroup input
  */
 typedef void (* GLFWjoystickfun)(int jid, int event);
+
+/*! @brief Titlebar hittest result.
+ *
+ *  This tells the result of hittest callback.
+ *
+ *  @sa @ref GLFWtitlebarhittestfun
+ *
+ *  @since Added after version 3.5.1 - library modification.
+ *
+ *  @ingroup window
+ */
+typedef enum _GLFWhittest
+{
+    GLFW_HITTEST_CLIENT = 0,
+    GLFW_HITTEST_TITLEBAR,
+    GLFW_HITTEST_RESTORE,
+    GLFW_HITTEST_MINIMIZE,
+    GLFW_HITTEST_MAXIMIZE,
+    GLFW_HITTEST_CLOSE,
+} _GLFWhittest;
 
 /*! @brief Video mode type.
  *
@@ -4268,6 +4314,37 @@ GLFWAPI GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* window, GLFWwindow
  *  @ingroup window
  */
 GLFWAPI GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* window, GLFWwindowsizefun callback);
+
+/*! @brief Sets the titlebar hittest callback for the specified window - library modification.
+ *
+ *  This function sets the titlebar hittest callback of the specified window,
+ *  which is called when the mouse hoveres the window to ask client if it's
+ *  hovering over custom titlebar area which needs to be handles as a native
+ *  titlebar. The callback is provided with the x and y coordinates of the mouse
+ *  cursor in screen coordinates.
+ *
+ *  @param[in] window The window whose callback to set.
+ *  @param[in] callback The new callback, or `NULL` to remove the currently set
+ *  callback.
+ *  @return The previously set callback, or `NULL` if no callback was set or the
+ *  library had not been [initialized](@ref intro_init).
+ *
+ *  @callback_signature
+ *  @code
+ *  void function_name(GLFWwindow* window, int xpos, int ypos, int* hit)
+ *  @endcode
+ *  For more information about the callback parameters, see the
+ *  [function pointer type](@ref GLFWtitlebarhittestfun).
+ *
+ *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref window_pos
+ *
+ *  @ingroup window
+ */
+GLFWAPI GLFWtitlebarhittestfun glfwSetTitleBarHittestCallback(GLFWwindow* window, GLFWtitlebarhittestfun callback);
 
 /*! @brief Sets the close callback for the specified window.
  *
