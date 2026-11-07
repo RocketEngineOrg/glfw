@@ -420,6 +420,10 @@ int main(int argc, char** argv)
             if (nk_checkbox_label(nk, "Decorated", &decorated))
                 glfwSetWindowAttrib(window, GLFW_DECORATED, decorated);
 
+            int titlebar = glfwGetWindowAttrib(window, GLFW_TITLEBAR);
+            if (nk_checkbox_label(nk, "Titlebar", &titlebar))
+                glfwSetWindowAttrib(window, GLFW_TITLEBAR, titlebar);
+
             int resizable = glfwGetWindowAttrib(window, GLFW_RESIZABLE);
             if (nk_checkbox_label(nk, "Resizable", &resizable))
                 glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable);
